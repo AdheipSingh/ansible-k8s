@@ -1,0 +1,52 @@
+---
+ - name: create deployment directory
+   file:
+     path: $HOME/deploy 
+     state: directory
+
+ - name: copy deployment files
+   template:
+     src: ../templates/deploy.yaml.j2
+     dest: $HOME/deploy/deploy.yaml 
+
+ - name: copy sql files
+   template:
+     src: ../templates/mysql.yaml.j2
+     dest: $HOME/deploy/mysql.yaml
+
+ - name: create namespace for deployment 
+   shell: kubectl create ns {{ namespace }}
+
+ - name: deploy mysql
+   shell: kubectl apply -f $HOME/deploy/mysql.yaml -n {{ namespace }}
+
+ - name: apply deployment
+   shell: kubectl apply -f $HOME/deploy/deploy.yaml -n {{ namespace }}
+
+ - name: get deployment info
+   shell: kubectl get pods -n {{ namespace }}
+   register: deploy_info
+
+ - debug:
+      var: deploy_info.stdout
+
+ - name: get component status
+   shell: kubectl get componentstatus
+   register: comp_status
+   
+ - debug:
+      var: comp_status.stdout
+
+ - name: get nodes status
+   shell: kubectl get nodes -o wide
+   register: node_status 
+
+ - debug:
+      var: node_status.stdout
+
+ - name: url 
+   shell: kubectl get svc -n {{ namespace }}
+   register: svc_url
+
+ - debug:
+      var: svc_url.stdout

@@ -1,0 +1,18 @@
+---
+# vars file for k8s
+namespace: wordpress
+app_image_name: wordpress:4.8-apache
+app_name_deployment: wordpress
+app_deployment_label: wordpress
+app_replicas: 1
+app_service_port: 80
+app_service_type: LoadBalancer
+app_storage: 20Gi
+app_db_passwd: root 
+container_port: 80 
+mysql_image: mysql:5.6
+mysql_storage: 20Gi
+mysql_password: root
+mysql_permissions: ReadWriteOnce
+
+
